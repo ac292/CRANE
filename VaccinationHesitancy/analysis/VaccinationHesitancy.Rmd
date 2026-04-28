@@ -1,0 +1,377 @@
+ 
+# Loading Data
+
+# Set working directory 
+# C:\Users\alexm\OneDrive\Documents\CLASSES\VTPEH6270\Immunizations _K
+
+setwd("C:/Users/alexm/REPOS/CRANE/VaccinationHesitancy/analysis")
+
+# Load file in df "data_K" from excel file 
+# downloaded from CDC "Vaccination_Coverage_and_Exemptions_among_Kindergartners_20260201"
+
+data_K <- 
+  read.csv("../data/Vaccination_Coverage_and_Exemptions_among_Kindergartners_20260201.csv",header=TRUE)
+
+# The data set is not labeled using best practices (e.g., uses unusual characters like "..."). We clean the  formatting using the `janitor` package.
+ 
+# install.packages("janitor")
+
+library(janitor)
+cleaned_data_K <- clean_names(data_K)
+
+# Preview the cleaned data
+names(cleaned_data_K)
+
+# count the number of rows
+nobs_data_K <- nrow(cleaned_data_K)
+ 
+# what are the unique values in some of the character columns
+unique(cleaned_data_K$geography_type)
+unique(cleaned_data_K$survey_type)
+
+# remove the columns geography_type, footnotes & survey_type
+
+cleaned_data_K <- 
+  cleaned_data_K[, !names(cleaned_data_K) %in% 
+                   c("geography_type","footnotes","survey_type")]
+ 
+# remove the data for cities and whole US
+
+library(dplyr)
+library(stringr)
+cleaned_data_K <- cleaned_data_K %>%
+  filter(
+    !str_starts(geography, regex("TX-|NY-", ignore_case = TRUE)) &
+    !str_detect(geography, regex("United States|U\\.S\\. Median", ignore_case = TRUE))
+  )
+
+# count the typical total population surveyed in one school year for one type of Vaccine
+
+library(dplyr)
+pop_K <- cleaned_data_K %>%
+  filter(vaccine_exemption == "Varicella", school_year == "2024-25", 
+         dose == "UTD (unknown disease history)") %>%
+  summarise(total = sum(population_size, na.rm = TRUE)) %>%
+  pull(total)
+
+# check for no redundancy in the population_size
+pop_K_varicella_2024 <- cleaned_data_K %>%
+  filter(vaccine_exemption == "Varicella", school_year == "2024-25",
+         dose == "UTD (unknown disease history)")
+
+# place commas for the thousands
+pop_K = format(pop_K, big.mark = ",")
+
+mean_pop_K <- mean(pop_K_varicella_2024$population_size, na.rm = TRUE)
+max_pop_K <- max(pop_K_varicella_2024$population_size, na.rm = TRUE)
+mean_pos_K <- format(round(mean_pop_K, 0), big.mark = ",")
+
+
+# Histogram of population surveyed for Varicella immunization in school year 2024-25.
+ 
+library(ggplot2)
+
+ggplot(pop_K_varicella_2024, aes(x = population_size)) +
+  geom_histogram(
+    bins = 20,
+    fill = "steelblue",
+    color = "white",
+    na.rm = TRUE
+  ) +
+  scale_x_continuous(labels = scales::comma) +
+  labs(
+    x = NULL,  # remove x-axis label,
+    caption = "Population surveyed in various USA geographical area.
+    \n Data is for Varicella 2024-25 school year"
+  ) +
+  theme(
+    plot.caption = element_text(size = 11, hjust = 0)
+  )
+
+# This is not a very informative histogram.
+ 
+# time period covered by the study? 
+
+# find minimum value of school_year
+unique(cleaned_data_K$school_year)
+
+# Need to create a new numerical column "year" to describe the 20XX-XX+1 school year as 20XX. 
+
+# substract "_XX" from cleaned_data_K$school_year start at digit 1 end at digit 4
+cleaned_data_K$year <- as.numeric(substr(cleaned_data_K$school_year, 1, 4))
+
+# find min and max year of study
+min(cleaned_data_K$year)
+max(cleaned_data_K$year)
+ 
+# Check class of estimate value for vaccination coverage (percentage) and thus should be a numerical value
+class(cleaned_data_K$estimate)
+
+# find out data where the data is not numerical
+# list rows where estimate is non numerical
+# unique(cleaned_data_K$estimate)
+
+# filter out data when non numerical
+
+library(tidyverse)
+data_numerical_K <- filter(cleaned_data_K, estimate !="Nreq") 
+data_numerical_K <- filter(data_numerical_K, estimate !="NReq") 
+data_numerical_K <- filter(data_numerical_K, estimate !="NR") 
+
+# Class conversion
+# convert estimate column as  as numeric
+# installing the package dplyr to use the mutate function
+
+library(dplyr)
+data_numerical_K <- data_numerical_K %>%
+ mutate(estimate = as.numeric(estimate))
+
+# Check output for first line of data after conversion and 
+# compare with same before conversion
+
+data1a <- first(data_numerical_K$estimate)
+data1b <- first(cleaned_data_K$estimate)
+
+# Check range of values for estimate variable
+# find minimum value of estimate value
+min(data_numerical_K$estimate)
+# find maximum value of estimate value
+max(data_numerical_K$estimate)
+
+
+# filter the data for exemptions
+# using package tydiverse
+
+library(tidyverse)
+data_exemption <- filter(data_numerical_K, 
+                      vaccine_exemption =="Exemption") 
+data_exemption_nonmed <- filter(data_exemption, 
+                      dose =="Non-Medical Exemption") 
+
+# find minimum value of estimate for Non-Medical Exemptions
+
+min(data_exemption_nonmed$estimate)
+
+# find maximum value of value for exemptions
+
+max(data_exemption$estimate)
+
+# find which geography has minimum value of value for Non-Medical Exemptions
+# find year and geography for minimum value of estimate  for Non-Medical Exemptions
+
+year_min_exemption <- data_exemption_nonmed[which.min(data_exemption_nonmed$estimate),]
+print(year_min_exemption$year)
+print(year_min_exemption$geography)
+
+
+# find which geography has maximum value of value for exemptions
+# find year and geography for maximum value of estimate exemption
+
+year_max_exemption <- data_exemption[which.max(data_exemption$estimate),]
+print(year_max_exemption$year)
+print(year_max_exemption$geography)
+
+# Subset the data to Idaho, that has the highest % of exemptions
+
+data_exemption_Idaho <- filter(data_exemption, 
+                      geography =="Idaho") 
+
+ 
+# Table for non medical vaccination exemptions
+ 
+library(kableExtra)
+tbl <- data_exemption_nonmed %>%
+  group_by(geography) %>%
+  summarise(
+    mean_estimate = mean(estimate, na.rm = TRUE),
+    sd_estimate = sd(estimate, na.rm = TRUE),
+    mean_exemptions = mean(number_of_exemptions, na.rm = TRUE),
+    mean_K_population = mean(population_size, na.rm = TRUE)
+  ) %>%
+  arrange(desc(mean_estimate)) %>%
+  kable(
+    caption = "Non-medical vaccination exemptions by state (averaged over years 2009-2025)",
+    digits = 2,
+    format = "html"
+  ) %>%
+  kable_styling(full_width = FALSE)
+
+# output table
+
+save_kable(tbl, "../output/table_nonmed_exemptions_by_state.html")
+ 
+ 
+# Raw plotting of Vaccination Exemptions for each Geographical Area
+ 
+ 
+## ----fig.width=10, fig.height=14-----------------------------------------------------
+
+# make a ggplot with multi facets for different states
+# plot the data after installing the ggplot2 package
+library(ggplot2)
+
+my_plot <- ggplot(data_exemption, 
+       aes(year,estimate, color=dose)) +
+  geom_point(size=1, alpha=0.5) + 
+  theme(plot.title = element_text(hjust=0.5, size=10)) + 
+  theme(plot.subtitle = element_text(hjust=0.5, size=10)) +
+  labs( title = "Vaccination Exemptions rates for Kindergartners",
+        subtitle = "(CDC data)",
+        x = "Year", 
+        y = "Vaccination Exemption Rates (%) ",
+        color = "Type of Exemption ") + 
+  scale_x_continuous(breaks = c(2010, 2020), 
+                     labels = c("2010", "2020")) + 
+  facet_wrap(geography ~.,ncol=5) +
+  geom_line()
+
+# save plot to a output file
+ggsave(
+  filename = "../output/Immunization_Exemptions_by_State.png",
+  plot = my_plot,
+  width = 8.5,
+  height = 10, 
+  dpi =300
+)
+
+
+# plot the data for Idaho
+
+library(ggplot2)
+Idaho_plot <- ggplot(data_exemption_Idaho, 
+       aes(year,estimate, color=dose)) +
+  geom_point(size=3, alpha=0.5) + 
+  theme(plot.title = element_text(hjust=0.5, size=10)) + 
+  theme(plot.subtitle = element_text(hjust=0.5, size=10)) +
+  labs( title = "Vaccination Exemptions rates for Kindergartners",
+        subtitle = "(CDC data for Idaho State)",
+        x = "Year", 
+        y = "Vaccination Exemption Rates (%) ",
+        color = "Type of Exemption") +
+  scale_x_continuous(breaks = c(2009, 2014, 2019, 2024), 
+                     labels = c("2009", "2014", "2019", "2024")) + 
+  geom_line()
+
+# save plot to a output file
+ggsave(
+  filename = "../output/Immunization_Exemptions_Idaho.png",
+  plot = Idaho_plot,
+  width = 5.25,
+  height = 3, 
+  dpi =300
+)
+
+# find minimum value of estimate for non-medical exemptions for Idaho
+
+data_exemption_Idaho_nonmed <- filter(data_exemption_Idaho, 
+                      dose =="Non-Medical Exemption") 
+print(min(data_exemption_Idaho_nonmed$estimate))
+
+# find maximum value of estimate for non-medical exemptions for Idaho
+
+print(max(data_exemption_Idaho_nonmed$estimate))
+
+# find minimum value of estimate for medical exemptions for Idaho
+
+data_exemption_Idaho_med <- filter(data_exemption_Idaho, 
+                      dose =="Medical Exemption") 
+
+# write a csv file with only Idaho data
+
+data_Idaho <- subset(data_numerical_K, geography == "Idaho")
+write.csv(data_Idaho, "../data/Immunizations_K_Idaho.csv", row.names=F)
+
+
+ 
+ *What does this plot show?*
+ 
+ - This plot shows that the vaccination exemption rate in Idaho has steadily 
+  increased from a low of `r min(data_exemption_Idaho_nonmed$estimate)`\% since 
+  data was first collected in `r min(data_exemption_Idaho_nonmed$year)`, to reach 
+  its highest level `r max(data_exemption_Idaho_nonmed$estimate)`\% in
+   `r max(data_exemption_Idaho_nonmed$year)`, which is the last year for 
+   which data is available. 
+# 
+# In contrast, the vaccination exemption rate for medical reasons has been relatively stable at rates between `r min(data_exemption_Idaho_med$estimate)`\% and `r max(data_exemption_Idaho_med$estimate)`\% over the same time period.
+ 
+ 
+ *For comparison, let's look at the data from Maine, which has the lowest % of 
+ Non-Medical Exemptions*
+ 
+ 
+## --------------------------------------------------------------------------------------
+
+# Subset the data to Maine, that has the lowest % of Non-Medical Exemptions
+
+data_exemption_Maine <- filter(data_exemption, 
+                      geography =="Maine") 
+
+
+ 
+ 
+ *Make a plot showing the estimated vaccination exemption rate across years for Maine*
+ 
+ *Generate a* ***publication-ready*** *plot.*
+ 
+ 
+## ----results='hide'--------------------------------------------------------------------
+# plot the data after installing the ggplot2 package
+library(ggplot2)
+Maine_plot <- ggplot(data_exemption_Maine, 
+       aes(year,estimate, color=dose)) +
+  geom_point(size=3, alpha=0.5) + 
+  theme(plot.title = element_text(hjust=0.5, size=10)) + 
+  theme(plot.subtitle = element_text(hjust=0.5, size=10)) +
+  labs( title = "Vaccination Exemptions rates for Kindergartners",
+        subtitle = "(CDC data for Maine State)",
+        x = "Year", 
+        y = "Vaccination Exemption Rates (%) ",
+        color = "Type of Exemption ") + 
+  scale_x_continuous(breaks = c(2009, 2014, 2019, 2024), 
+                     labels = c("2009", "2014", "2019", "2024")) + 
+  geom_line()
+
+# save plot to a output file
+ggsave(
+  filename = "../output/Immunization_Exemptions_Maine.png",
+  plot = Maine_plot,
+  width = 5.25,
+  height = 3, 
+  dpi =300
+)
+
+# find minimum value of estimate for non-medical exemptions for Maine
+data_exemption_Maine_nonmed <- filter(data_exemption_Maine, 
+                      dose =="Non-Medical Exemption") 
+print(min(data_exemption_Maine_nonmed$estimate))
+
+# find maximum value of estimate for non-medical exemptions for Maine
+print(max(data_exemption_Maine_nonmed$estimate))
+
+# find year for maximum value of estimate for non-medical exemptions for Maine
+year_max_exemption_Maine_nonmed <-
+  data_exemption_Maine_nonmed[which.max(data_exemption_Maine_nonmed$estimate),]
+print(year_max_exemption_Maine_nonmed$year)
+
+# find year for minimum value of estimate for non-medical exemptions for Maine
+year_min_exemption_Maine_nonmed <-
+  data_exemption_Maine_nonmed[which.min(data_exemption_Maine_nonmed$estimate),]
+print(year_min_exemption_Maine_nonmed$year)
+
+# find minimum value of estimate for medical exemptions for Maine
+data_exemption_Maine_med <- filter(data_exemption_Maine, 
+                      dose =="Medical Exemption") 
+
+
+ *What does this second plot show?*
+ 
+ 
+ # This plot shows that the vaccination exemption rate in the state of Maine has # decreased from a high of
+ `r max(data_exemption_Maine_nonmed$estimate)`\% reached in 
+ `r year_max_exemption_Maine_nonmed$year`, to reach its lowest level 
+ `r min(data_exemption_Maine_nonmed$estimate)`\% in 
+ `r year_min_exemption_Maine_nonmed$year`. 
+ In contrast, the vaccination exemption rate for medical reasons has been relatively stable at rates between 
+ `r min(data_exemption_Maine_med$estimate)`\% and 
+ `r max(data_exemption_Maine_med$estimate)`\% over the same time period.
+ 

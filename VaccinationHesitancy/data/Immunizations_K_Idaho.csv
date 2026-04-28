@@ -1,0 +1,133 @@
+"vaccine_exemption","dose","geography","school_year","estimate","population_size","percent_surveyed","number_of_exemptions","year"
+"Exemption","Any Exemption","Idaho","2011-12",5.4,22762,NA,1226,2011
+"Exemption","Any Exemption","Idaho","2012-13",5.9,23888,NA,1399,2012
+"Exemption","Any Exemption","Idaho","2013-14",6.4,23934,NA,1540,2013
+"Exemption","Any Exemption","Idaho","2014-15",6.5,22968,NA,1500,2014
+"Exemption","Any Exemption","Idaho","2015-16",6.1,22686,NA,1389,2015
+"Exemption","Any Exemption","Idaho","2016-17",6.5,22589,NA,1478,2016
+"Exemption","Any Exemption","Idaho","2017-18",7.1,22553,NA,1597,2017
+"Exemption","Any Exemption","Idaho","2021-22",9.8,23854,99.6,2335,2021
+"Polio","","Idaho","2011-12",89.6,22762,100,NA,2011
+"Exemption","Any Exemption","Idaho","2018-19",7.7,22995,NA,1778,2018
+"Exemption","Any Exemption","Idaho","2019-20",7.6,23301,NA,1764,2019
+"Exemption","Any Exemption","Idaho","2020-21",8.2,22677,98.3,1861,2020
+"Exemption","Non-Medical Exemption","Idaho","2021-22",9.2,23854,99.6,2206,2021
+"Exemption","Any Exemption","Idaho","2009-10",3.8,22624,NA,860,2009
+"Exemption","Non-Medical Exemption","Idaho","2009-10",3.5,22624,NA,794,2009
+"Exemption","Non-Medical Exemption","Idaho","2011-12",5.1,22762,NA,1165,2011
+"Exemption","Non-Medical Exemption","Idaho","2012-13",5.5,23888,NA,1309,2012
+"Exemption","Non-Medical Exemption","Idaho","2013-14",6.1,23934,NA,1451,2013
+"Exemption","Non-Medical Exemption","Idaho","2014-15",6.2,22968,NA,1432,2014
+"Exemption","Non-Medical Exemption","Idaho","2015-16",5.8,22686,NA,1320,2015
+"Exemption","Non-Medical Exemption","Idaho","2016-17",6.2,22589,NA,1392,2016
+"Exemption","Non-Medical Exemption","Idaho","2017-18",6.7,22553,NA,1504,2017
+"Exemption","Non-Medical Exemption","Idaho","2018-19",7.4,22995,NA,1696,2018
+"Exemption","Non-Medical Exemption","Idaho","2020-21",7.9,22677,98.3,1797,2020
+"Exemption","Non-Medical Exemption","Idaho","2019-20",7.2,23301,NA,1689,2019
+"Exemption","Medical Exemption","Idaho","2014-15",0.3,22968,NA,68,2014
+"Exemption","Medical Exemption","Idaho","2015-16",0.3,22686,NA,69,2015
+"Exemption","Medical Exemption","Idaho","2016-17",0.4,22589,NA,86,2016
+"Exemption","Medical Exemption","Idaho","2017-18",0.4,22553,NA,93,2017
+"Exemption","Medical Exemption","Idaho","2011-12",0.3,22762,NA,61,2011
+"Exemption","Medical Exemption","Idaho","2012-13",0.4,23888,NA,90,2012
+"Exemption","Medical Exemption","Idaho","2013-14",0.4,23934,NA,89,2013
+"Exemption","Medical Exemption","Idaho","2019-20",0.3,23301,NA,75,2019
+"Exemption","Medical Exemption","Idaho","2018-19",0.4,22995,NA,82,2018
+"Exemption","Medical Exemption","Idaho","2020-21",0.3,22677,98.3,64,2020
+"Exemption","Medical Exemption","Idaho","2021-22",0.5,23854,99.6,128,2021
+"Polio","","Idaho","2020-21",86.6,22677,98.3,NA,2020
+"Polio","","Idaho","2021-22",84,23854,99.6,NA,2021
+"Exemption","Medical Exemption","Idaho","2009-10",0.3,22624,NA,66,2009
+"Polio","","Idaho","2009-10",92.8,22624,100,NA,2009
+"Hepatitis B","","Idaho","2019-20",91.3,23301,98.5,NA,2019
+"Hepatitis B","","Idaho","2018-19",91.7,22995,99,NA,2018
+"Hepatitis B","","Idaho","2021-22",88.2,23854,99.6,NA,2021
+"Hepatitis B","","Idaho","2020-21",90.1,22677,98.3,NA,2020
+"Polio","","Idaho","2015-16",90.6,22686,100,NA,2015
+"Polio","","Idaho","2014-15",90.1,22968,100,NA,2014
+"Polio","","Idaho","2013-14",88.4,23934,100,NA,2013
+"Polio","","Idaho","2012-13",88.5,23888,100,NA,2012
+"Polio","","Idaho","2019-20",89.1,23301,98.5,NA,2019
+"Polio","","Idaho","2018-19",89.1,22995,99,NA,2018
+"Polio","","Idaho","2016-17",90.3,22589,100,NA,2016
+"Polio","","Idaho","2017-18",89.9,22553,99,NA,2017
+"Varicella","UTD (unknown disease history)","Idaho","2020-21",86.2,22677,98.3,NA,2020
+"Varicella","UTD (unknown disease history)","Idaho","2021-22",83.4,23854,99.6,NA,2021
+"MMR","","Idaho","2023-24",79.6,22376,100,NA,2023
+"DTP, DTaP, or DT","","Idaho","2023-24",79.5,22376,100,NA,2023
+"Varicella","2 Doses (unknown disease history)","Idaho","2023-24",79.1,22376,100,NA,2023
+"Hepatitis B","","Idaho","2023-24",84.8,22376,100,NA,2023
+"Polio","","Idaho","2023-24",80.1,22376,100,NA,2023
+"Exemption","Medical Exemption","Idaho","2023-24",0.4,22376,100,91,2023
+"Exemption","Non-Medical Exemption","Idaho","2023-24",13.9,22376,100,3101,2023
+"Exemption","Any Exemption","Idaho","2023-24",14.3,22376,100,3192,2023
+"Varicella","UTD (unknown disease history)","Idaho","2023-24",79.1,22376,100,NA,2023
+"MMR (PAC)","MMR (PAC)","Idaho","2023-24",86.5,NA,NA,NA,2023
+"DTP, DTaP, or DT","","Idaho","2024-25",78.3,22242,99.5,NA,2024
+"MMR","","Idaho","2024-25",78.5,22242,99.5,NA,2024
+"Varicella","2 Doses (unknown disease history)","Idaho","2024-25",78.1,22242,99.5,NA,2024
+"Hepatitis B","","Idaho","2024-25",84,22242,99.5,NA,2024
+"Polio","","Idaho","2024-25",78.9,22242,99.5,NA,2024
+"Exemption","Medical Exemption","Idaho","2024-25",0.3,22242,99.5,64,2024
+"Exemption","Non-Medical Exemption","Idaho","2024-25",15.1,22242,99.5,3363,2024
+"Exemption","Any Exemption","Idaho","2024-25",15.4,22242,99.5,3427,2024
+"Varicella","UTD (unknown disease history)","Idaho","2024-25",78.1,22242,99.5,NA,2024
+"MMR (PAC)","MMR (PAC)","Idaho","2024-25",85.5,22242,99.5,NA,2024
+"MMR (PAC)","MMR (PAC)","Idaho","2017-18",93.9,NA,NA,NA,2017
+"MMR (PAC)","MMR (PAC)","Idaho","2018-19",93.6,NA,NA,NA,2018
+"MMR (PAC)","MMR (PAC)","Idaho","2019-20",93.4,NA,NA,NA,2019
+"MMR (PAC)","MMR (PAC)","Idaho","2020-21",93.6,NA,NA,NA,2020
+"MMR (PAC)","MMR (PAC)","Idaho","2021-22",90.9,NA,NA,NA,2021
+"MMR (PAC)","MMR (PAC)","Idaho","2022-23",88.9,NA,NA,NA,2022
+"DTP, DTaP, or DT","","Idaho","2022-23",81,23721,99.3,NA,2022
+"MMR","","Idaho","2022-23",81.3,23721,99.3,NA,2022
+"Varicella","2 Doses (unknown disease history)","Idaho","2022-23",80.7,23721,99.3,NA,2022
+"Hepatitis B","","Idaho","2022-23",86.3,23721,99.3,NA,2022
+"Exemption","Non-Medical Exemption","Idaho","2022-23",11.5,23721,99.3,2733,2022
+"Exemption","Medical Exemption","Idaho","2022-23",0.5,23721,99.3,126,2022
+"Exemption","Any Exemption","Idaho","2022-23",12.1,23721,99.3,2859,2022
+"Varicella","UTD (unknown disease history)","Idaho","2022-23",80.7,23721,99.3,NA,2022
+"Polio","","Idaho","2022-23",81.8,23721,99.3,NA,2022
+"MMR","","Idaho","2009-10",87,22624,100,NA,2009
+"DTP, DTaP, or DT","","Idaho","2021-22",83.5,23854,99.6,NA,2021
+"DTP, DTaP, or DT","","Idaho","2020-21",86.4,22677,98.3,NA,2020
+"DTP, DTaP, or DT","","Idaho","2019-20",89,23301,98.5,NA,2019
+"DTP, DTaP, or DT","","Idaho","2018-19",88.8,22995,99,NA,2018
+"Varicella","2 Doses (unknown disease history)","Idaho","2011-12",85.8,22762,100,NA,2011
+"Varicella","2 Doses (unknown disease history)","Idaho","2015-16",89.1,22686,100,NA,2015
+"Varicella","2 Doses (unknown disease history)","Idaho","2014-15",88.4,22968,100,NA,2014
+"Varicella","2 Doses (unknown disease history)","Idaho","2013-14",86.5,23934,100,NA,2013
+"Varicella","2 Doses (unknown disease history)","Idaho","2012-13",86.6,23888,100,NA,2012
+"DTP, DTaP, or DT","","Idaho","2016-17",89.8,22589,100,NA,2016
+"DTP, DTaP, or DT","","Idaho","2017-18",89.3,22553,99,NA,2017
+"DTP, DTaP, or DT","","Idaho","2011-12",89,22762,100,NA,2011
+"DTP, DTaP, or DT","","Idaho","2015-16",89.8,22686,100,NA,2015
+"DTP, DTaP, or DT","","Idaho","2014-15",89.4,22968,100,NA,2014
+"DTP, DTaP, or DT","","Idaho","2013-14",88,23934,100,NA,2013
+"DTP, DTaP, or DT","","Idaho","2012-13",88.3,23888,100,NA,2012
+"MMR","","Idaho","2015-16",90.2,22686,100,NA,2015
+"MMR","","Idaho","2014-15",89.5,22968,100,NA,2014
+"MMR","","Idaho","2013-14",88.2,23934,100,NA,2013
+"MMR","","Idaho","2012-13",88.4,23888,100,NA,2012
+"MMR","","Idaho","2011-12",89.2,22762,100,NA,2011
+"Hepatitis B","","Idaho","2017-18",92.1,22553,99,NA,2017
+"Hepatitis B","","Idaho","2016-17",92.6,22589,100,NA,2016
+"Hepatitis B","","Idaho","2015-16",92.5,22686,100,NA,2015
+"Hepatitis B","","Idaho","2014-15",92.5,22968,100,NA,2014
+"Hepatitis B","","Idaho","2013-14",91.2,23934,100,NA,2013
+"Hepatitis B","","Idaho","2012-13",91.7,23888,100,NA,2012
+"Hepatitis B","","Idaho","2011-12",92.3,22762,100,NA,2011
+"DTP, DTaP, or DT","","Idaho","2009-10",86.8,22624,100,NA,2009
+"MMR","","Idaho","2021-22",83.9,23854,99.6,NA,2021
+"MMR","","Idaho","2019-20",89.1,23301,98.5,NA,2019
+"MMR","","Idaho","2020-21",86.5,22677,98.3,NA,2020
+"MMR","","Idaho","2017-18",89.5,22553,99,NA,2017
+"MMR","","Idaho","2018-19",89.5,22995,99,NA,2018
+"MMR","","Idaho","2016-17",89.9,22589,100,NA,2016
+"Varicella","2 Doses (unknown disease history)","Idaho","2016-17",89.1,22589,100,NA,2016
+"Varicella","2 Doses (unknown disease history)","Idaho","2018-19",88.3,22995,99,NA,2018
+"Varicella","2 Doses (unknown disease history)","Idaho","2017-18",88.6,22553,99,NA,2017
+"Hepatitis B","","Idaho","2009-10",93,22624,100,NA,2009
+"Varicella","2 Doses (unknown disease history)","Idaho","2021-22",83.4,23854,99.6,NA,2021
+"Varicella","2 Doses (unknown disease history)","Idaho","2019-20",88.5,23301,98.5,NA,2019
+"Varicella","2 Doses (unknown disease history)","Idaho","2020-21",86.2,22677,98.3,NA,2020
