@@ -177,6 +177,8 @@ data_exemption_Idaho <- filter(data_exemption,
 # Table for non medical vaccination exemptions
  
 library(kableExtra)
+library(webshot2)
+library(magick)
 tbl <- data_exemption_nonmed %>%
   group_by(geography) %>%
   summarise(
@@ -187,15 +189,20 @@ tbl <- data_exemption_nonmed %>%
   ) %>%
   arrange(desc(mean_estimate)) %>%
   kable(
-    caption = "Non-medical vaccination exemptions by state (averaged over years 2009-2025)",
+    caption = "Non-medical vaccination exemptions by state (averaged over years 2009–2025)",
     digits = 2,
     format = "html"
   ) %>%
-  kable_styling(full_width = FALSE)
+  kable_styling(
+    full_width = FALSE,
+    bootstrap_options = c("striped", "hover", "condensed")
+  )
 
-# output table
-
-save_kable(tbl, "../output/table_nonmed_exemptions_by_state.html")
+# Save as PNG
+save_kable(
+  tbl,
+  "../output/table_nonmed_exemptions_by_state.png"
+)
  
  
 # Raw plotting of Vaccination Exemptions for each Geographical Area

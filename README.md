@@ -131,7 +131,7 @@ VaccinationHesitancy/
         ├──Immunization_Vaccines_Idaho.png
         ├──Income_n_EducationPovertyLanguage.png
         ├──Income_n_VoterRegistration.png
-        ├──table_nonmed_exemptions_by_state.html
+        ├──table_nonmed_exemptions_by_state.png
 ├── report    # Markdown report
         ├──VaccinationHesitance_US_States.pdf
         ├──Social-Idaho.pdf
