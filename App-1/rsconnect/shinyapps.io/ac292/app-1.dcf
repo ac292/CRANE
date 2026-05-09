@@ -1,0 +1,12 @@
+name: app-1
+title: App-1
+username: ac292
+account: ac292
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 17133061
+bundleId: 11972366
+url: https://ac292.shinyapps.io/app-1/
+version: 1
+asMultiple: FALSE
+asStatic: FALSE
