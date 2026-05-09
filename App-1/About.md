@@ -74,3 +74,8 @@ poverty rate), which may introduce multicollinearity and overlapping explanatory
 Once county-level immunization exemption data for Idaho becomes available, it will be incorporated 
 into the analysis to strengthen inference and enable direct assessment of the primary outcome of 
 interest.
+
+# AI use
+
+ChatGPT was used for finding functions, syntax, and library needed for the goals set. AI was also used to 
+improve and shorten wording in this section
