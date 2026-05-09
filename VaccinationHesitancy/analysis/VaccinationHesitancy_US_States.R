@@ -2,9 +2,8 @@
 # Loading Data
 
 # Set working directory 
-# C:\Users\alexm\OneDrive\Documents\CLASSES\VTPEH6270\Immunizations _K
 
-setwd("C:/Users/alexm/REPOS/MPH/VaccinationHesitancy/analysis")
+setwd("C:/Users/alexm/REPOS/CRANE/VaccinationHesitancy/analysis")
 
 # Load file in df "data_K" from excel file 
 # downloaded from CDC "Vaccination_Coverage_and_Exemptions_among_Kindergartners_20260201"
@@ -14,8 +13,6 @@ data_K <-
 
 # The data set is not labeled using best practices (e.g., uses unusual characters like "..."). We clean the  formatting using the `janitor` package.
  
-# install.packages("janitor")
-
 library(janitor)
 cleaned_data_K <- clean_names(data_K)
 
@@ -95,7 +92,7 @@ ggplot(pop_K_varicella_2024, aes(x = population_size)) +
 # find minimum value of school_year
 unique(cleaned_data_K$school_year)
 
-# Create a new numerical column "year" to describe the 20XX-XX+1 school year as 20XX. 
+# Need to create a new numerical column "year" to describe the 20XX-XX+1 school year as 20XX. 
 
 # substract "_XX" from cleaned_data_K$school_year start at digit 1 end at digit 4
 cleaned_data_K$year <- as.numeric(substr(cleaned_data_K$school_year, 1, 4))
@@ -171,7 +168,12 @@ year_max_exemption <- data_exemption[which.max(data_exemption$estimate),]
 print(year_max_exemption$year)
 print(year_max_exemption$geography)
 
+# Subset the data to Idaho, that has the highest % of exemptions
 
+data_exemption_Idaho <- filter(data_exemption, 
+                      geography =="Idaho") 
+
+ 
 # Table for non medical vaccination exemptions
  
 library(kableExtra)
@@ -197,12 +199,9 @@ save_kable(tbl, "../output/table_nonmed_exemptions_by_state.html")
  
  
 # Raw plotting of Vaccination Exemptions for each Geographical Area
- 
- 
-## ----fig.width=10, fig.height=14-----------------------------------------------------
-
 # make a ggplot with multi facets for different states
 # plot the data after installing the ggplot2 package
+
 library(ggplot2)
 
 my_plot <- ggplot(data_exemption, 
@@ -228,4 +227,6 @@ ggsave(
   height = 10, 
   dpi =300
 )
+
+
 

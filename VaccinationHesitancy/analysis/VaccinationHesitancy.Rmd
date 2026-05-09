@@ -2,7 +2,6 @@
 # Loading Data
 
 # Set working directory 
-# C:\Users\alexm\OneDrive\Documents\CLASSES\VTPEH6270\Immunizations _K
 
 setwd("C:/Users/alexm/REPOS/CRANE/VaccinationHesitancy/analysis")
 
@@ -14,8 +13,6 @@ data_K <-
 
 # The data set is not labeled using best practices (e.g., uses unusual characters like "..."). We clean the  formatting using the `janitor` package.
  
-# install.packages("janitor")
-
 library(janitor)
 cleaned_data_K <- clean_names(data_K)
 
@@ -202,12 +199,9 @@ save_kable(tbl, "../output/table_nonmed_exemptions_by_state.html")
  
  
 # Raw plotting of Vaccination Exemptions for each Geographical Area
- 
- 
-## ----fig.width=10, fig.height=14-----------------------------------------------------
-
 # make a ggplot with multi facets for different states
 # plot the data after installing the ggplot2 package
+
 library(ggplot2)
 
 my_plot <- ggplot(data_exemption, 
@@ -235,143 +229,4 @@ ggsave(
 )
 
 
-# plot the data for Idaho
 
-library(ggplot2)
-Idaho_plot <- ggplot(data_exemption_Idaho, 
-       aes(year,estimate, color=dose)) +
-  geom_point(size=3, alpha=0.5) + 
-  theme(plot.title = element_text(hjust=0.5, size=10)) + 
-  theme(plot.subtitle = element_text(hjust=0.5, size=10)) +
-  labs( title = "Vaccination Exemptions rates for Kindergartners",
-        subtitle = "(CDC data for Idaho State)",
-        x = "Year", 
-        y = "Vaccination Exemption Rates (%) ",
-        color = "Type of Exemption") +
-  scale_x_continuous(breaks = c(2009, 2014, 2019, 2024), 
-                     labels = c("2009", "2014", "2019", "2024")) + 
-  geom_line()
-
-# save plot to a output file
-ggsave(
-  filename = "../output/Immunization_Exemptions_Idaho.png",
-  plot = Idaho_plot,
-  width = 5.25,
-  height = 3, 
-  dpi =300
-)
-
-# find minimum value of estimate for non-medical exemptions for Idaho
-
-data_exemption_Idaho_nonmed <- filter(data_exemption_Idaho, 
-                      dose =="Non-Medical Exemption") 
-print(min(data_exemption_Idaho_nonmed$estimate))
-
-# find maximum value of estimate for non-medical exemptions for Idaho
-
-print(max(data_exemption_Idaho_nonmed$estimate))
-
-# find minimum value of estimate for medical exemptions for Idaho
-
-data_exemption_Idaho_med <- filter(data_exemption_Idaho, 
-                      dose =="Medical Exemption") 
-
-# write a csv file with only Idaho data
-
-data_Idaho <- subset(data_numerical_K, geography == "Idaho")
-write.csv(data_Idaho, "../data/Immunizations_K_Idaho.csv", row.names=F)
-
-
- 
- *What does this plot show?*
- 
- - This plot shows that the vaccination exemption rate in Idaho has steadily 
-  increased from a low of `r min(data_exemption_Idaho_nonmed$estimate)`\% since 
-  data was first collected in `r min(data_exemption_Idaho_nonmed$year)`, to reach 
-  its highest level `r max(data_exemption_Idaho_nonmed$estimate)`\% in
-   `r max(data_exemption_Idaho_nonmed$year)`, which is the last year for 
-   which data is available. 
-# 
-# In contrast, the vaccination exemption rate for medical reasons has been relatively stable at rates between `r min(data_exemption_Idaho_med$estimate)`\% and `r max(data_exemption_Idaho_med$estimate)`\% over the same time period.
- 
- 
- *For comparison, let's look at the data from Maine, which has the lowest % of 
- Non-Medical Exemptions*
- 
- 
-## --------------------------------------------------------------------------------------
-
-# Subset the data to Maine, that has the lowest % of Non-Medical Exemptions
-
-data_exemption_Maine <- filter(data_exemption, 
-                      geography =="Maine") 
-
-
- 
- 
- *Make a plot showing the estimated vaccination exemption rate across years for Maine*
- 
- *Generate a* ***publication-ready*** *plot.*
- 
- 
-## ----results='hide'--------------------------------------------------------------------
-# plot the data after installing the ggplot2 package
-library(ggplot2)
-Maine_plot <- ggplot(data_exemption_Maine, 
-       aes(year,estimate, color=dose)) +
-  geom_point(size=3, alpha=0.5) + 
-  theme(plot.title = element_text(hjust=0.5, size=10)) + 
-  theme(plot.subtitle = element_text(hjust=0.5, size=10)) +
-  labs( title = "Vaccination Exemptions rates for Kindergartners",
-        subtitle = "(CDC data for Maine State)",
-        x = "Year", 
-        y = "Vaccination Exemption Rates (%) ",
-        color = "Type of Exemption ") + 
-  scale_x_continuous(breaks = c(2009, 2014, 2019, 2024), 
-                     labels = c("2009", "2014", "2019", "2024")) + 
-  geom_line()
-
-# save plot to a output file
-ggsave(
-  filename = "../output/Immunization_Exemptions_Maine.png",
-  plot = Maine_plot,
-  width = 5.25,
-  height = 3, 
-  dpi =300
-)
-
-# find minimum value of estimate for non-medical exemptions for Maine
-data_exemption_Maine_nonmed <- filter(data_exemption_Maine, 
-                      dose =="Non-Medical Exemption") 
-print(min(data_exemption_Maine_nonmed$estimate))
-
-# find maximum value of estimate for non-medical exemptions for Maine
-print(max(data_exemption_Maine_nonmed$estimate))
-
-# find year for maximum value of estimate for non-medical exemptions for Maine
-year_max_exemption_Maine_nonmed <-
-  data_exemption_Maine_nonmed[which.max(data_exemption_Maine_nonmed$estimate),]
-print(year_max_exemption_Maine_nonmed$year)
-
-# find year for minimum value of estimate for non-medical exemptions for Maine
-year_min_exemption_Maine_nonmed <-
-  data_exemption_Maine_nonmed[which.min(data_exemption_Maine_nonmed$estimate),]
-print(year_min_exemption_Maine_nonmed$year)
-
-# find minimum value of estimate for medical exemptions for Maine
-data_exemption_Maine_med <- filter(data_exemption_Maine, 
-                      dose =="Medical Exemption") 
-
-
- *What does this second plot show?*
- 
- 
- # This plot shows that the vaccination exemption rate in the state of Maine has # decreased from a high of
- `r max(data_exemption_Maine_nonmed$estimate)`\% reached in 
- `r year_max_exemption_Maine_nonmed$year`, to reach its lowest level 
- `r min(data_exemption_Maine_nonmed$estimate)`\% in 
- `r year_min_exemption_Maine_nonmed$year`. 
- In contrast, the vaccination exemption rate for medical reasons has been relatively stable at rates between 
- `r min(data_exemption_Maine_med$estimate)`\% and 
- `r max(data_exemption_Maine_med$estimate)`\% over the same time period.
- 

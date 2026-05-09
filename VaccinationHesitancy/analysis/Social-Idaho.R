@@ -1,0 +1,460 @@
+
+# Set working directory 
+# C:\Users\alexm\REPOS\CRANE\VaccinationHesitancy
+setwd("C:/Users/alexm/REPOS/CRANE/VaccinationHesitancy/Analysis")
+
+
+
+# Data for Social Determinants in Idaho
+
+# loading the data from https://hdpulse.nimhd.nih.gov and Idaho Board of Election
+
+data_poverty <- read.csv("../data/IdahoCounties_Poverty.csv", skip = 4)
+data_education <- read.csv("../data/IdahoCounties_Education.csv", skip = 5)
+data_medianincome <- read.csv("../data/IdahoCounties_MedianIncome.csv", skip = 4)
+data_languageisolation <- read.csv("../data/IdahoCounties_LanguageIsolation.csv", skip = 4)
+data_population <- read.csv("../data/IdahoCounties_Population.csv")
+data_voters <- read.csv("../data/2025IdahoVoters.csv", skip = 1)
+
+# change class of Voter Counts to Integer
+data_voters$CON <- as.integer(
+  gsub(",", "", data_voters$CON))
+data_voters$DEM <- as.integer(
+  gsub(",", "", data_voters$DEM))
+data_voters$LIB <- as.integer(
+  gsub(",", "", data_voters$LIB))
+data_voters$REP <- as.integer(
+  gsub(",", "", data_voters$REP))
+data_voters$UNA <- as.integer(
+  gsub(",", "", data_voters$UNA))
+data_voters$Total <- as.integer(
+  gsub(",", "", data_voters$Total))
+
+
+## Voter Affiliations in Fringe Parties in Idaho
+
+# We first look at the distribution of Idaho voter registrations in fringe political parties, 
+# such as Libertarian and Constitution, which are known to embrace "extreme" political views. We combine the percentage of voters for the Libertarian Party with those for the Constitution Party and call it the percentage of voters for Fringe Parties. 
+
+# sum voter registration for fringe parties
+data_voters$FRINGE.PERCENT <- data_voters$CON.PERCENT + data_voters$LIB.PERCENT
+
+
+# The following histogram looks at "Fringe" Party voters (Libertarian and Constitution affiliated 
+# voters are summed). The values of "Fringe" Party voters are pooled in 10 bins for clarity. From 
+# the distribution (Fig. 1), we can conclude that the rate of Fringe Party Voters does not exceed 2%, 
+# hence it is a low subset of the Idaho population, but probably an under representation as one of the 
+# tenet of the Libertarian party is to discourage any participation in civic duties such as voting. 
+# But because the numbers are so low, we will not use this variable for our analysis.
+# In contrast, the values espoused by the % of Republican-registered voters span a large spectrum 
+# (Fig. 2), hence we will use that variable in our analysis.
+
+library(patchwork)
+library(ggplot2)
+hist_fringe <- ggplot(data_voters, aes(x = FRINGE.PERCENT)) +
+  geom_histogram(bins = 10,
+                 fill = "lightblue",
+                 color = "black") +
+  labs(caption = "", 
+       x = "% Registered as Libertarian or Constitution",
+       y = "number of counties")
+
+# county with Max Fringe Voters - which county has the highest value?
+max(data_voters$FRINGE.PERCENT)
+data_voters$COUNTY[which.max(data_voters$FRINGE.PERCENT)]
+data_voters$FIPS[which.max(data_voters$FRINGE.PERCENT)]
+
+hist_dem <- ggplot(data_voters, aes(x = DEM.PERCENT)) +
+  geom_histogram(bins = 10,
+                 fill = "lightblue",
+                 color = "black") +
+  labs(caption = "", 
+       x = "% Registered as Democrat",
+       y = "number of counties")
+
+hist_rep <- ggplot(data_voters, aes(x = REP.PERCENT)) +
+  geom_histogram(bins = 10,
+                 fill = "lightblue",
+                 color = "black") +
+  labs(caption = "", 
+       x = "% Registered as Republican",
+       y = "number of counties")
+
+hist_ind <- ggplot(data_voters, aes(x = UNA.PERCENT)) +
+  geom_histogram(bins = 10,
+                 fill = "lightblue",
+                 color = "black") +
+  labs(caption = "", 
+       x = "% Registered as Independent",
+       y = "number of counties")
+
+# county with Max Republican registered Voters - which county has the highest value?
+max(data_voters$REP.PERCENT)
+data_voters$COUNTY[which.max(data_voters$REP.PERCENT)]
+data_voters$FIPS[which.max(data_voters$REP.PERCENT)]
+
+
+Fig1 <- (hist_dem + hist_rep) / (hist_ind + hist_fringe) +
+  plot_annotation(caption = "Figure 1: Distribution of counties per % voter affiliation", 
+                  theme = theme (plot.caption = element_text(size=12, hjust=0.5)
+                    ))
+
+# save plot to a output file
+ggsave(
+  filename = "../output/Counties_n_VoterRegistration.png",
+  plot = Fig1,
+  width = 8.5,
+  height = 10, 
+  dpi =300
+)
+
+
+
+## Merging of Data \
+
+# We merge the data available for Idaho residents based on variable "FIPS", which is a numerical 
+# code assigned to each county.
+
+library(dplyr)
+
+data <- data_poverty %>%
+  full_join(data_education, by = "FIPS") %>%
+  full_join(data_medianincome, by = "FIPS") %>%
+  full_join(data_languageisolation, by = "FIPS") %>%
+  full_join(data_population, by = "FIPS") %>%
+  full_join(data_voters, by = "FIPS")
+  
+# rename columns
+colnames(data)[1] <- "county"
+colnames(data)[3] <- "below.poverty.percent"
+colnames(data)[7] <- "below.education.percent"
+colnames(data)[11] <- "median.income"
+colnames(data)[14] <- "language.isolation.percent"
+colnames(data)[19] <- "population.age.18.39"
+
+head(data$median.income)
+
+# change class of median income from character to integer
+data$median.income <- as.integer(
+  gsub(",", "", data$median.income)
+)
+
+# write csv file for merged date
+
+write.csv(data,"../data/social_Idaho.csv")
+
+
+# Exploration of relationships between variables assuming Linearity
+
+## Data Exploration for Population & Voter Registrations
+
+
+library(patchwork)
+library(scales)
+library(ggplot2)
+hist_pop <- ggplot(data, aes(x = population.age.18.39)) +
+  geom_histogram(bins = 20,
+                 fill = "lightblue",
+                 color = "black") +
+  labs(x = "population age 18-39",
+       y = "number of counties")
+
+Fig2 <- hist_pop +
+    plot_annotation(caption = "Figure 2: Distribution of counties with population age 18-39",             theme = theme (
+                      plot.caption = element_text(size=12, hjust=0.5)
+                    ))
+
+# save plot to a output file
+ggsave(
+  filename = "../output/Counties_n_Population.png",
+  plot = Fig2,
+  width = 8.5,
+  height = 10, 
+  dpi =300
+)
+
+# county with Max Fringe Voters - which county has the highest value?
+max(data$population.age.18.39)
+data$COUNTY[which.max(data$population.age.18.39)]
+data$FIPS[which.max(data$population.age.18.39)]
+
+# visualisation of population numbers and republican registrations %
+library(ggplot2)
+density_vs_rep <- ggplot(data, aes(x = population.age.18.39, y = REP.PERCENT)) +
+  geom_point(size = 3, alpha = 0.8)  +
+  scale_x_continuous(labels = label_number(scale = 1e-3, suffix = "K")) +
+  geom_smooth(method=lm) +
+  labs(
+    x = "Population 18-39",
+    y = "Republican registrations (%)" ) +
+  theme_minimal() 
+
+
+# visualisation of population numbers and democrat registrations %
+library(ggplot2)
+density_vs_dem <- ggplot(data, aes(x = population.age.18.39, y = DEM.PERCENT)) +
+  geom_point(size = 3, alpha = 0.8)  +
+  scale_x_continuous(labels = label_number(scale = 1e-3, suffix = "K")) +
+  geom_smooth(method=lm) +
+  labs(
+    x = "Population 18-39",
+    y = "Democrat registrations (%)" ) +
+  theme_minimal() 
+
+
+# visualisation of population numbers and independant registrations %
+library(ggplot2)
+density_vs_ind <- ggplot(data, aes(x = population.age.18.39, y = UNA.PERCENT)) +
+  geom_point(size = 3, alpha = 0.8)  +
+  scale_x_continuous(labels = label_number(scale = 1e-3, suffix = "K")) +
+  geom_smooth(method=lm) +
+  labs(
+    x = "Population 18-39",
+    y = "Independent registrations (%)" ) +
+  theme_minimal() 
+
+# visualisation of population numbers and fringe registrations %
+library(ggplot2)
+density_vs_fringe <- ggplot(data, aes(x = population.age.18.39, y = FRINGE.PERCENT)) +
+  geom_point(size = 3, alpha = 0.8)  +
+  scale_x_continuous(labels = label_number(scale = 1e-3, suffix = "K")) +
+  geom_smooth(method=lm) +
+  labs(
+    x = "Population 18-39",
+    y = "Fringe registrations (%)" ) +
+  theme_minimal() 
+
+Fig3 <-   (density_vs_rep + density_vs_dem) /
+  (density_vs_ind + density_vs_fringe) +
+    plot_annotation(caption = "Figure 3: Voter registration vs county population density",
+                    theme = theme (plot.caption = element_text(size=12, hjust=0.5)
+                                               ))
+
+# save plot to a output file
+ggsave(
+  filename = "../output/Population_n_VoterRegistration.png",
+  plot = Fig3,
+  width = 8.5,
+  height = 10, 
+  dpi =300
+)
+
+
+## Data Exploration for Median Income and Education Level, Voter Affiliation, Language Isolation, 
+# Below Poverty Level
+
+
+str(data)
+
+library(patchwork)
+library(scales)
+
+# visualisation of median.income and below.education.percent
+library(ggplot2)
+edu_vs_income <- ggplot(data, aes(x = below.education.percent, y = median.income)) +
+  geom_point(size = 3, alpha = 0.8)  +
+  scale_y_continuous(labels = label_number(scale = 1e-3, suffix = "K")) +
+  geom_smooth(method=lm) +
+  labs(
+    x = "below education (%)",
+    y = "median income ($)" ) +
+  theme_minimal() 
+
+
+# visualisation of  median income & language isolation 
+library(ggplot2)
+lang_vs_income <- ggplot(data, aes(x = language.isolation.percent, y = median.income)) +
+  geom_point(size = 3, alpha = 0.8)  +
+  scale_y_continuous(labels = label_number(scale = 1e-3, suffix = "K")) +
+  geom_smooth(method=lm) +
+  labs(
+    x = "language isolation (%)",
+    y = "median income ($)" ) +
+  theme_minimal() 
+
+
+# visualisation of median.income and below.education.percent
+library(ggplot2)
+poverty_vs_income <- ggplot(data, aes(x = below.poverty.percent, y = median.income)) +
+  geom_point(size = 3, alpha = 0.8)  +
+  scale_y_continuous(labels = label_number(scale = 1e-3, suffix = "K")) +
+  geom_smooth(method=lm) +
+  labs(
+    x = "below poverty level (%)",
+    y = "median income ($)" ) +
+  theme_minimal() 
+
+
+# visualisation of median.income and republican registrations %
+library(ggplot2)
+rep_vs_income <- ggplot(data, aes(x = REP.PERCENT, y = median.income)) +
+  geom_point(size = 3, alpha = 0.8)  +
+  scale_y_continuous(labels = label_number(scale = 1e-3, suffix = "K")) +
+  geom_smooth(method=lm) +
+  labs(
+    x = "republican registrations (%)",
+    y = "median income ($)" ) +
+  theme_minimal() 
+
+
+# visualisation of median.income and democrat registrations %
+library(ggplot2)
+dem_vs_income <- ggplot(data, aes(x = DEM.PERCENT, y = median.income)) +
+  geom_point(size = 3, alpha = 0.8)  +
+  scale_y_continuous(labels = label_number(scale = 1e-3, suffix = "K")) +
+  geom_smooth(method=lm) +
+  labs(
+    x = "democrat registrations (%)",
+    y = "median income ($)" ) +
+  theme_minimal() 
+
+
+# visualisation of median.income and independent registrations %
+library(ggplot2)
+ind_vs_income <- ggplot(data, aes(x = UNA.PERCENT, y = median.income)) +
+  geom_point(size = 3, alpha = 0.8)  +
+  scale_y_continuous(labels = label_number(scale = 1e-3, suffix = "K")) +
+  geom_smooth(method=lm) +
+  labs(
+    x = "independent registrations (%)",
+    y = "median income ($)" ) +
+  theme_minimal() 
+
+# visualisation of median.income and fringe registrations %
+library(ggplot2)
+fringe_vs_income <- ggplot(data, aes(x = FRINGE.PERCENT, y = median.income)) +
+  geom_point(size = 3, alpha = 0.8)  +
+  scale_y_continuous(labels = label_number(scale = 1e-3, suffix = "K")) +
+  geom_smooth(method=lm) +
+  labs(
+    x = "libertarian & constitution registrations (%)",
+    y = "median income ($)" ) +
+  theme_minimal() 
+
+Fig4 <- (edu_vs_income / lang_vs_income / poverty_vs_income) +
+  plot_annotation(caption = "Figure 4: County median income vs social determinants", 
+                  theme = theme (plot.caption = element_text(size=12, hjust=0.5)
+                    ))
+
+# save plot to a output file
+ggsave(
+  filename = "../output/Income_n_EducationPovertyLanguage.png",
+  plot = Fig4,
+  width = 8.5,
+  height = 10, 
+  dpi =300
+)
+ 
+Fig5 <- (rep_vs_income + dem_vs_income)  /
+(ind_vs_income + fringe_vs_income) +
+  plot_annotation(caption = "Figure 5: County median income vs voter registration", 
+                  theme = theme (plot.caption = element_text(size=12, hjust=0.5)
+                    ))
+
+# save plot to a output file
+ggsave(
+  filename = "../output/Income_n_VoterRegistration.png",
+  plot = Fig5,
+  width = 8.5,
+  height = 10, 
+  dpi =300
+)
+
+
+# Several variables seem consistent with linear correlations pair-wise.
+
+# Model building \
+
+# We will build a model to analyze correlations between Median Income and other social determinants. 
+# This does not address directly the original question. We here ask whether counties with higher median 
+# income have lower republican voter percentages, higher density of population, lower language isolation
+# percentages, lower poverty rates, and lower below education percentages.  The assumption of linearity 
+# was more or less established by the pair-wise scatter plots displayed above.
+
+# fit model
+
+mod= lm( median.income ~ REP.PERCENT + language.isolation.percent + population.age.18.39 + below.poverty.percent + below.education.percent , data=data)
+
+summary(mod)
+
+
+## Verification of the assumption of absence of collinearity
+
+library(car)
+
+# VIF
+vif(mod)
+
+
+
+# All VIF values are below 1.2, hence collinearity is likely not present between the explanatory 
+# variables. 
+
+# Model Selection
+
+
+mod1= lm( median.income ~ below.poverty.percent , data=data)
+
+summary(mod1)
+
+
+mod2= lm( median.income ~ below.poverty.percent + REP.PERCENT , data=data)
+
+summary(mod2)
+
+mod3= lm( median.income ~ below.poverty.percent + REP.PERCENT + population.age.18.39, data=data)
+
+summary(mod3)
+
+mod4= lm( median.income ~ below.poverty.percent + REP.PERCENT + population.age.18.39 + language.isolation.percent, data=data)
+
+summary(mod4)
+
+
+## Verification of the assumptions of normality and homoscedasticity of residuals for Model 4
+
+
+hist(mod4$residuals)
+shapiro.test(mod4$residuals)
+
+plot(mod4)
+
+
+# calculate mean and sd of median income variable and population variable
+
+meanI <- mean(data$median.income)
+sdI <- sd(data$median.income)
+medianP <- median(data$population.age.18.39)
+IQRP <- IQR(data$population.age.18.39)
+
+
+
+# The normality of the residuals is visible from the histogram. The Shapiro-Wilk normality test also gives a p-value of 0.82, hence the null hypothesis (absence of normality) can be rejected. The Residuals vs Fitted plot is not quite centered along a straight line at y=0 but we will consider that there is homoscedasticity of the residuals. 
+
+# Conclusion
+
+# The correlation between median income and below poverty %, republican party affiliation, population age 18-39 and language isolation % appears significant with p values <0.05. \
+
+#| Variable                | Effect Size, SD 95% CI|  unit    | P-value  |
+#|-------------------------|-----------------------|----------|----------|
+#| below poverty (%)       | -1617 ± 708           |  $/%     |  6.5e-05 |
+#| republican  (%)         | -313  ± 200           |  $/%     |  0.00406 |
+#| population 18-39        |  104  ±  89           |  $/100   |  0.02837 |
+#| language isolation (%)  | -589  ± 540           |  $/%     |  0.03896 |
+
+# The adjusted R-squared value is 0.57. 
+
+# The effect sizes when relating median income to % numbers are large because of the large scale differential (the average for the median income is `r meanI` with Standard Deviation `r sdI`), while percentages are between 0 and 100. The effect size when relating median income to populations numbers is small because the county median population is `r medianP` and the IQR is `r IQRP`, hence in a more similar scale than the median income. Note that the population variable distribution is not normal- there are many scarcely populated counties and one very urban one, and not many in between. Hence this variable lacks data points for the larger range. This may skew the calculation of the effect size. \
+
+# The statistical analysis reports on the effect sizes on Idaho county Median Income of the % of population at poverty level, the % of county resident affiliated as Republicans, the population density, the % population suffering language isolation. Not surprisingly, the % of poverty level is inversely related to the county median income and so are the % of the population experiencing language isolation the % of the population affiliated to the Republican party. In contrast, median income correlates positively with population density. In other words, counties with low density of population and higher poverty % and higher language isolation %  and higher Republican political affiliation %, have lower median income.
+
+
+# AI Use Disclosure Statement
+
+# This analysis did not rely on A.I. 
+
+# GitHub link  
+
+# https://github.com/ac292/CRANE
+
+# Literature Cited
